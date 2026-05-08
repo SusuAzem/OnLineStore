@@ -1,0 +1,110 @@
+﻿@{
+    ViewData["Title"] = "قائمة المستخدمين";
+}
+
+<div class="d-flex" id="wrapper">
+    <partial name="_Navbar" />
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="text-center mt-3">
+                <h2>@ViewData["Title"]</h2>
+                <hr />
+            </div>
+            <div class="table-responsive p-2">
+                <table id="userData" class="table table-striped table-bordered">
+                    <thead class="thead-dark">
+                        <tr class="table-info">
+                            <th>الاسم</th>
+                            <th>البريد الالكتروني</th>
+                            <th>رقم التواصل</th>
+                            <th>الدور</th>
+                            <th>خيارات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#userData").DataTable({
+                ajax: {
+                    url: "/Admin/Users/GetAll",
+                },
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/ar.json",
+                },
+                columns: [
+                    { data: "name", width: "10%" },
+                    { data: "email", width: "30%" },
+                    { data: "phone", width: "10%" },
+                    { data: "role", width: "10%" },
+                    {
+                        data: {
+                            id: "id", lockoutEnd: "lockoutEnd"
+                        },
+                        "render": function (data) {
+                            var today = new Date().getTime();
+                            var lockout = new Date(data.lockoutEnd).getTime();
+                            if (lockout > today) {
+                                //user is currently locked
+                                return `
+                                                    <td style = "width:150px">
+                                                        <div class="btn-group">
+                                                            <a class="btn" title="تعيين المستخدم كمعلم"
+                                                                href="/Admin/Users/Upgrade/${data.id}">
+                                                                <i class="fa fa-arrow-up" ></i>
+                                                            </a>
+                                                            <a class="btn" title="تعيين المستخدم كطالب"
+                                                                        href="/Admin/Users/Downgrade/${data.id}">
+                                                                <i class="fa fa-arrow-down"></i>
+                                                            </a>
+                                                            <a href="/Admin/Users/LockUnlock/${data.id}"
+                                                                    class="btn danger" title="تفعيل المستخدم">
+                                                                <i class="fa fa-unlock-alt"></i>
+                                                            </a>
+                                                            <a id="userDel" class= "btn danger" title="حذف المستخدم"
+                                                                        href="/Admin/Users/Block/${data.id}">
+                                                                <i class="fa fa-trash"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                        `;
+                            }
+                            else {
+                                return `
+                                                <td style = "width:150px">
+                                                    <div class="btn-group">
+                                                        <a class="btn" title="تعيين المستخدم كمعلم"
+                                                            href="/Admin/Users/Upgrade/${data.id} ">
+                                                            <i class="fa fa-arrow-up" ></i>
+                                                        </a>
+                                                        <a class="btn" title="تعيين المستخدم كطالب"
+                                                                    href="/Admin/Users/Downgrade/${data.id}">
+                                                            <i class="fa fa-arrow-down"></i>
+                                                        </a>
+                                                        <a class="btn danger" title="حجب المستخدم"
+                                                                href="/Admin/Users/LockUnlock/${data.id} ">
+                                                                <i class="fa fa-lock"></i>
+                                                        </a>
+                                                        <a id="userDel" class= "btn danger" title="حذف المستخدم"
+                                                                    href="/Admin/Users/Block/${data.id} ">
+                                                                    <i class="fa fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                                    `;
+                            }
+
+                        }, width: "40%"
+                    }                 
+                ]
+            })
+        })     
+    </script>
+}

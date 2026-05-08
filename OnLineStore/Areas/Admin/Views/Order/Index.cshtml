@@ -1,0 +1,77 @@
+﻿﻿@{
+    var status = Context.Request.Query["status"];
+    var pending = "text-primary";
+    var inprocess = "text-primary";
+    var completed = "text-primary";
+    var approved = "text-primary";
+    var all = "text-primary";
+
+    switch (status)
+    {
+        case "pending":
+            pending = "active text-white";
+            break;
+        case "inprocess":
+            inprocess = "active text-white";
+            break;
+        case "completed":
+            completed = "active text-white";
+            break;
+        case "approved":
+            approved = "active text-white";
+            break;
+        default:
+            all = "active text-white";
+            break;
+    }
+
+}
+@{
+    ViewData["Title"] = "قائمة الطلبات";
+}
+
+<div class="d-flex" id="wrapper">
+    <partial name="_Navbar" />
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="p-2">
+            <h2 class="text-primary">@ViewData["Title"]</h2>
+        </div>
+        <div class="p-2">
+            <ul class="list-group list-group-horizontal-sm" style="font-size:1vw">
+                <a asp-controller="Order" asp-action="Index" asp-route-status="inprocess">
+                <li class="list-group-item @inprocess">InProcess قيد التنفيذ</li>
+                </a>
+                <a asp-controller="Order" asp-action="Index" asp-route-status="pending">
+                <li class="list-group-item @pending">Pending قيد إتمام الدفع</li>
+                </a>
+                <a asp-controller="Order" asp-action="Index" asp-route-status="completed">
+                <li class="list-group-item @completed">Completed مكتمل</li>
+                </a>
+                <a asp-controller="Order" asp-action="Index" asp-route-status="approved">
+                <li class="list-group-item @approved">Approved تم القبول</li>
+                </a>
+                <a asp-controller="Order" asp-action="Index" asp-route-status="all">
+                <li class="list-group-item @all">All الكل</li>
+                </a>
+            </ul>
+        </div>
+        <br />
+
+        <table id="tblData" class="table table-responsive p-2 table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>المعرف</th>
+                    <th>الاسم</th>
+                    <th>حالة الطلب</th>
+                    <th>المجموع</th>
+                    <th>التفاصيل</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/order.js"></script>
+}

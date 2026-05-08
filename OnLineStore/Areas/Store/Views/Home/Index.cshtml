@@ -1,0 +1,51 @@
+﻿@using System.Collections.Specialized
+@using System.Text.Json
+@model _7Colors.ViewModels.ProductListViewModel
+@{
+    ViewData["Title"] = "المتجر الالكتروني";
+}
+<h1>@ViewData["Title"]</h1>
+
+<section id="newDeals">
+    <div class="container">
+        <div class="row newDeals ">
+            <!-- Sidebar Widgets Column -->
+            <div class="col-md-3 deals">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="input-group" id="searchWrapper">
+                            <form action="/" onsubmit="return false">
+                                <input type="text" class="form-control" name="searchBar" id="searchBar"
+                                       placeholder="ابحث عن .. ">
+                            </form>
+                        </div>
+                    </div>
+                    <h5>الفئات</h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-6 col-lg-6">
+                                <input class="mybtn btn filter-btn mb-1" data-filter="كل الفئات" value="كل الفئات" />
+                                                                    
+                                @foreach (ProductType item in Model.Types!)
+                                {
+                                    <input class="mybtn btn filter-btn mb-1" data-filter="@item.Type" value=" @item.Type" />
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+            <div id="newProducts" class="row pt-4 col-9"></div>
+            <div id="btnContainer"></div>
+        </div>
+    </div>
+</section>
+
+
+@section scripts {
+    <script src="~/js/LoadPro.js"></script>
+
+    <script>
+
+    </script>
+}

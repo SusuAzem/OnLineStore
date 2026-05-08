@@ -1,0 +1,200 @@
+﻿@model OnLineStore.ViewModels.OrderViewModel
+@using Business
+@using Microsoft.Extensions.Options
+@using System.Globalization
+
+}
+@{
+    ViewData["Title"] = "تفاصيل الطلب";
+}
+
+<div class="d-flex" id="wrapper">
+    <partial name="_Navbar" />
+    <!-- Page Content -->
+    <div id="page-content-wrapper" class="px-3">
+        <br />
+        <div class="container">
+            <div class="card summC">
+                <div class="card-header text-light mt-2 ch">
+                    <i class="fa fa-shopping-cart"></i> &nbsp;
+                    تفاصيل الطلب
+                </div>
+                <div class="card-body summR">
+                    <div class="row my-1">
+                        <div class="col-4">
+                            <label>تاريخ الطلب</label>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" readonly
+                                   value="@Model.OrderHeader!.OrderDate.ToString("dd/MM/yy-hh:mm")" />
+                            <span asp-validation-for="OrderHeader!.OrderDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row my-1">
+                        <div class="col-4">
+                            <label>حالة الطلب</label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="OrderHeader!.OrderStatus" class="form-control" readonly />
+                            <span asp-validation-for="OrderHeader!.OrderStatus" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-12 py-4">
+                        <h4 class="my-3">
+                            <span class="text-info">تفاصيل الدفع</span>
+                        </h4>
+                        <div class="row my-1">
+                            <div class="col-4">
+                                <label>موعد الدفع</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" readonly value="@Model.OrderHeader!.PaymentDate.ToString("dd/MM/yy-hh:mm")" />
+                                <span asp-validation-for="OrderHeader!.PaymentDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-4">
+                                <label>انتهاء الدفع</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" readonly value="@Model.OrderHeader!.PaymentDueDate.ToString("dd/MM/yy-hh:mm")" />
+                                <span asp-validation-for="OrderHeader!.PaymentDueDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-4">
+                                <label>حالة الدفع</label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="OrderHeader!.PaymentStatus" class="form-control bg-gray-white" />
+                                <span asp-validation-for="OrderHeader!.PaymentStatus" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-12 col-lg-12 py-4">
+                        <h4 class="mb-3">
+                            <span class="text-info">تفاصيل الشحن</span>
+                        </h4>
+                        <div class="row my-1">
+                            <div class="col-4">
+                                <label>الناقل</label>
+                            </div>
+                            @* <div class="col-8">
+                            <input asp-for="OrderHeader!.Carrier" class="form-control" readonly />
+                            <span asp-validation-for="OrderHeader!.Carrier" class="text-danger"></span>
+                            </div> *@
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-4">
+                                <label>رقم التتبع</label>
+                            </div>
+                            <div class="col-8">
+                                @*   <input asp-for="OrderHeader!.TrackingNumber" class="form-control" readonly />
+                                <span asp-validation-for="OrderHeader!.TrackingNumber" class="text-danger"></span> *@
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-4">
+                                <label>موعد الشحن</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="form-control" readonly value="@Model.OrderHeader!.ShippingDate.ToString("dd/MM/yy-hh:mm")" />
+                                <span asp-validation-for="OrderHeader!.ShippingDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-12 py-4">
+                        <h4 class="mb-3">
+                            <span class="text-info">تفاصيل العميل</span>
+                        </h4>
+                        <div class="row my-1">
+                            <div class="col-4">
+                                <label>الاسم</label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="OrderHeader!.User!.Name" class="form-control" readonly />
+                                <span asp-validation-for="OrderHeader!.User!.Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-4">
+                                <label>رقم التواصل</label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="OrderHeader!.User!.Phone" class="form-control" readonly />
+                                <span asp-validation-for="OrderHeader!.User!.Phone" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-4">
+                                <label>الشارع</label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="OrderHeader!.User!.StreetAddress" class="form-control" readonly />
+                                <span asp-validation-for="OrderHeader!.User!.StreetAddress" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-4">
+                                <label>المدينة</label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="OrderHeader!.User!.City" class="form-control" readonly />
+                                <span asp-validation-for="OrderHeader!.User!.City" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-4">
+                                <label>الرمز البريدي</label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="OrderHeader!.User!.PostalCode" class="form-control" readonly />
+                                <span asp-validation-for="OrderHeader!.User!.PostalCode" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-12 py-4">
+                        <h4 class="mb-3">
+                            <span class="text-info">عناصر الطلب</span>
+                        </h4>
+                        <ul class="list-group mb-3">
+                            @foreach (var details in Model.OrderItems!)
+                            {
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="my-0">@details.Product!.Name</h6>
+                                        <small class="text-muted">الكمية: @details.Count</small>
+                                    </div>
+                                    <span class="text-muted my-2">المجموع الجزئي: @details.ItemsPrice.ToString("c", new CultureInfo("ar-SA")).ConvertNumerals()</span>
+                                </li>
+                            }
+                            <li class="list-group-item bg-light">
+                                <small class="text-info">المجموع الكلي: </small>
+                                <strong class="text-info">@Model.OrderHeader!.OrderTotal.ToString("c", new CultureInfo("ar-SA")).ConvertNumerals()</strong>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-footer w-100">
+                    <div class="row">
+                        <div class="col-12 col-md-3">
+                            <a asp-action="Index" asp-controller="Order" class="btn">العودة للقائمة </a>
+                        </div>
+                        <div class="col-12 col-md-6 pt-2">
+                            <p class="summF">
+                                موعد الاستلام التقريبي
+                                @DateTime.Now.AddDays(7).ToString("dd/MMM/yyyy").ConvertNumerals() - @DateTime.Now.AddDays(14).ToString("dd/MMM/yyyy").ConvertNumerals()
+                            </p>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <a class="btn" title="إلغاء الدفع" asp-area="Admin" asp-controller="Order" asp-action="VoidPayment" asp-route-id="@Model.OrderHeader.Id">
+                                <i class="fa fa-resistance"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

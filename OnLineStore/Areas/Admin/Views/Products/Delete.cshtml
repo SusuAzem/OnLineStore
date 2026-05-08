@@ -1,0 +1,94 @@
+﻿@model OnLineStore.ViewModels.ProductItemViewModel
+@{
+    ViewData["Title"] = "حذف المنتج";
+}
+
+<div class="d-flex" id="wrapper">
+    <partial name="_Navbar" />
+    <!-- /#sidebar-wrapper -->
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <h4 class="text-info">@ViewData["Title"]</h4>
+            <div class="row">
+                <form asp-action="Delete" method="post" enctype="multipart/form-data" class="col-8" asp-route-id="@Model.Id">
+                    <div class="p-4 rounded border row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <label asp-for="Name"></label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="Name" class="form-control" readonly />
+                            </div>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <label asp-for="Price"></label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="Price" class="form-control" readonly />
+                            </div>
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <label asp-for="ProductColor"></label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="ProductColor" class="form-control" readonly />
+                            </div>
+                            <span asp-validation-for="ProductColor" class="text-danger"></span>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <label asp-for="TypeId"></label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="ProductType!.Type" class="form-control" readonly />
+                            </div>
+                            <span asp-validation-for="TypeId" class="text-danger"></span>
+                        </div>                    
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <label asp-for="IsAvailable"></label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="IsAvailable" readonly type="checkbox" />
+                            </div>
+                            <span asp-validation-for="IsAvailable" class="text-danger"></span>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <label asp-for="IsPublished"></label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="IsPublished" type="checkbox" readonly />
+                            </div>
+                            <span asp-validation-for="IsPublished" class="text-danger"></span>
+                        </div>
+                        <br />
+                        <br />
+                        <div class="form-group">
+                            <input class="btn" type="submit" value="حذف" />
+                            <a asp-action="Index" class="btn">عودة للقائمة</a>
+                        </div>
+                    </div>
+                </form>
+                <div id="proImg" class="col-4">
+                    <div class="form-group">
+                        <img src="@Model.Image" class="card-img" id="Detail" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

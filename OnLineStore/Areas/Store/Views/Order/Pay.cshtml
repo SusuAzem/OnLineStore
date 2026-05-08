@@ -1,0 +1,33 @@
+﻿@model Core.OrderHeader
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+<!-- Moyasar Styles -->
+<link rel="stylesheet" href="https://cdn.moyasar.com/mpf/1.12.0/moyasar.css" />
+<!-- Moyasar Scripts -->
+<script src="https://cdn.moyasar.com/mpf/1.12.0/moyasar.js"></script>
+<style>
+
+    input.mysr-form-cardInfoElement, #mysr-cc-number {
+        direction: ltr;
+        text-align: left;
+    }
+
+    #mysr-cc-name {
+        direction: rtl;
+    }
+
+</style>
+
+<div class="mysr-form"></div>
+<script>
+    Moyasar.init({
+        element: '.mysr-form',
+        amount: @(Model.OrderTotal)* 100,
+        currency: 'SAR',
+        description: '@Model.Id',
+        publishable_api_key: '@Configuration["Moyasar:Test:PublishableKey"]',
+        callback_url: 'https://www.7sevencolors.com/ECommerce/Order/OrderConfirmation',
+        methods: ['creditcard'],
+        // on_completed: 'https://www.7sevencolors.com/api/order/savepayment',
+    })
+</script>

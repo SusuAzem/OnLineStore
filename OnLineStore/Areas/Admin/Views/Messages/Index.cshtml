@@ -1,0 +1,40 @@
+﻿@using Core
+@model IEnumerable<Message>
+@{
+    ViewData["Title"] = "قائمة الرسائل";
+}
+
+<div class="d-flex" id="wrapper">
+    <partial name="_Navbar" />
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <a href="#" target="_blank" title="">
+            الذهاب إلى خادم الرسائل الالكترونية
+        </a>
+        <ul>
+            <li>
+            </li>
+            <li>
+            </li>
+        </ul>
+         <div class="table-responsive p-2">
+        <table id="messages" class="table table-striped table-bordered">
+        <thead>
+        <tr>
+        <th>الاسم</th>
+        <th>البريد الالكتروني</th>
+        <th>رقم التواصل</th>
+        <th>المحتوى</th>
+        <th>وقت الإرسال</th>
+        <th>خيارات</th>
+        </tr>
+        </thead>
+        </table>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/js/messagelist.js"></script>
+}

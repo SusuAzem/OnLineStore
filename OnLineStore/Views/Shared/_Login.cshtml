@@ -1,0 +1,46 @@
+﻿﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@{
+    string? nameId = null;
+    if (User.Identity!.IsAuthenticated)
+    {
+        nameId = User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier)!.Value;
+    }
+}
+<ul class="navbar-nav loging">
+    @if (User.Identity!.IsAuthenticated)
+    {
+        @if (User.HasClaim("Registered", "true"))
+        {
+            <li class="nav-item ">
+                <a class="nav-link text-dark" asp-area="UserData" asp-controller="Account" asp-action="Account" asp-route-nameId="@nameId">
+                    مرحباً @User.Identity.Name
+                </a>
+            </li>
+        }
+         else
+            {
+            <li class="nav-item ">
+                <a class="nav-link text-color" asp-area="UserData" asp-controller="Account" asp-action="Account" asp-route-nameId="@nameId" title="فضلاً أكمل بيانات حسابك">
+                    مرحباً @User.Identity.Name
+                </a>
+            </li>
+            }
+            <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="UserData" asp-controller="Account" asp-action="Logout">تسجيل الخروج</a>
+            </li>              
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark " asp-area="UserData" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Query["ReturnUrl"]" tooltip="تسجيل الدخول">
+                <img id="gl" src="~/images/web_light_rd_na@4x.png" alt="تسجيل الدخول"/>
+            </a>
+        </li>
+    }
+</ul>
+@* <div id="g_id_onload"
+     data-client_id="YOUR_CLIENT_ID"
+     data-callback="handleCredentialResponse">
+</div>
+<div class="g_id_signin" data-type="standard"></div> *@

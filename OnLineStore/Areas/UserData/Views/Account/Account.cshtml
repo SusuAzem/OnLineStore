@@ -1,0 +1,133 @@
+﻿@model OnLineStore.ViewModels.AccountViewModel
+
+@{
+    ViewData["Title"] = "حساب المستخدم";
+}
+<div class="d-flex" id="wrapper">
+    <partial name="_UNavbar" />
+    <!-- /#sidebar-wrapper -->
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <h2 class="text-info">@ViewData["Title"]</h2>
+            <div class="p-4 rounded border row col-8">
+                <form asp-action="Account">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input asp-for="User.Nameidentifier" type="hidden" />
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label asp-for="User.Name" class="control-label"></label>
+                        </div>
+                        <div class="col-md-8">
+                            <input asp-for="User.Name" class="form-control" />
+                        </div>
+                        <span asp-validation-for="User.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label asp-for="User.GivenName" class="control-label"></label>
+                        </div>
+                        <div class="col-md-8">
+                            <input asp-for="User.GivenName" class="form-control" />
+                        </div>
+                        <span asp-validation-for="User.GivenName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label asp-for="User.Surname" class="control-label"></label>
+                        </div>
+                        <div class="col-md-8">
+                            <input asp-for="User.Surname" class="form-control" />
+                        </div>
+                        <span asp-validation-for="User.Surname" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label asp-for="User.Email" class="control-label"></label>
+                        </div>
+                        <div class="col-md-8">
+                            <input asp-for="User.Email" class="form-control" readonly />                           
+                        </div>
+                        <span asp-validation-for="User.Email" class="text-danger"></span>
+                    </div>               
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label asp-for="User.Phone" class="control-label"></label>
+                        </div>
+                        <div class="col-md-8">
+                            <input asp-for="User.Phone" class="form-control" value="05" lang="en" />
+                        </div>
+                        <span asp-validation-for="User.Phone" class="text-danger"></span>
+                    </div>                
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label asp-for="Client.StreetAddress" class="control-label"></label>
+                        </div>
+                        <div class="col-md-8">
+                            <input asp-for="Client.StreetAddress" class="form-control" />
+                        </div>
+                        <span asp-validation-for="Client.StreetAddress" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label asp-for="Client.Neighborhood" class="control-label"></label>
+                        </div>
+                        <div class="col-md-8">
+                            <input asp-for="Client.Neighborhood" class="form-control" />
+                        </div>
+                        <span asp-validation-for="Client.Neighborhood" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label asp-for="Client.City" class="control-label"></label>
+                        </div>
+                        <div class="col-md-8">
+                            <input asp-for="Client.City" class="form-control" />
+                        </div>
+                        <span asp-validation-for="Client.City" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label asp-for="Client.PostalCode" class="control-label"></label>
+                        </div>
+                        <div class="col-md-8">
+                            <input asp-for="Client.PostalCode" class="form-control" type="number" lang="en" />
+                        </div>
+                        <span asp-validation-for="Client.PostalCode" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label asp-for="User.Age" class="control-label"></label>
+                        </div>
+                        <div class="col-md-8">
+                            <input asp-for="User.Age" class="form-control" type="number" lang="en" />
+                        </div>
+                        <span asp-validation-for="User.Age" class="text-danger"></span>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label asp-for="User.Roles" class="control-label"></label>
+                        </div>
+                        <div class="col-md-8">
+                            <input asp-for="User.Roles" class="form-control" readonly />
+                        </div>
+                        <span asp-validation-for="User.Roles" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="تعديل" class="btn" />
+                        <a asp-action="Index" asp-controller="Home" class="btn">الصفحة الرئيسية</a>
+                    </div>
+                </form>
+                <a class="mt-2" href="/Messages/New">
+                    <i class="fa fa-envelope"></i>
+                    لتغيير الدور الرجاء التواصل مع الإدارة
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

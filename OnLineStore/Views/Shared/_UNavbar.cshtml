@@ -1,0 +1,29 @@
+﻿@using System.Security.Claims
+@{
+    var userId = User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier)!.Value;
+}﻿
+<aside class="right-sidebar bg-sidebar" id="sidebar-wrapper">
+    <div id="sidebar" class="sidebar-heading">
+        <a asp-controller="Panel" asp-area="UserData" asp-action="FrontPage" class="list-group-item-action">
+            <i class='fa fa-dashboard'></i> لوحة التحكم
+        </a>
+    </div>
+    <!-- begin sidebar scrollbar -->
+    <div class="" data-simplebar style="height:100%;">
+        <!-- sidebar menu -->
+        <div class="clearfix"></div>
+        <div class="list-group list-group-flush">
+            <a class="list-group-item list-group-item-action" asp-area="UserData" asp-controller="Account" asp-action="Account" asp-route-nameId="@userId">
+                <i class="fa fa-user-circle"></i> إعدادات الحساب
+            </a>           
+            <a class="list-group-item list-group-item-action" asp-area="UserData" asp-controller="Orders" asp-action="Index" asp-route-nameId="@userId">
+                <i class="fa fa-list"></i> الطلبات
+            </a>
+        </div>
+    </div>
+</aside>
+
+
+
+
+
