@@ -1,12 +1,12 @@
 ﻿
 using AspNetCoreHero.ToastNotification.Abstractions;
 
+using static Business.StringDefault;
+
 using Data.IRepository;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-using NuGet.DependencyResolver;
 
 
 namespace OnLineStore.Areas.Admin.Controllers
@@ -30,20 +30,36 @@ namespace OnLineStore.Areas.Admin.Controllers
 
         public IActionResult GetAll()
         {
-            var userList = unitOfWork.User.GetAll(u=>!u.Roles.Contains("Admin")).Select(
-                    u => new { name = u.Name, email = u.Email, phone = u.Phone, role = u.Roles.ToList() , 
+            var userList = unitOfWork.User.GetAll(u=>u.Role == AdminEmail).Select(
+                    u => new { name = u.Name, email = u.Email, phone = u.Phone , role = u.Role,
                         id = u.NameIdentifier, lockoutEnd = u.LockoutEnd }).ToList();                            
             return Json(new { data = userList });
         }
 
+        public async Task<IActionResult> AssignAdmin(string id)
+        {
+            var user = unitOfWork.User.GetFirstOrDefault(u => u.NameIdentifier == id);
+            if (user != null)
+            {
+                user.Role = "Admin";
+                unitOfWork.User.Update(user);
+                await unitOfWork.Save();
+                toastNotification.Information($"لقد تم تعيين المستخدم {user.Name} كمسؤول");
+                return RedirectToAction(nameof(Index));
+            }
+            toastNotification.Error("حدث خطأ خلال عملية التعيين كمسؤول");
+            return RedirectToAction(nameof(Index));
+        }
+
+
         public async Task<IActionResult> Block(string id)
         {
-            var teacher = unitOfWork.User.GetFirstOrDefault(u => u.NameIdentifier == id);
-            if (teacher != null)
+            var user = unitOfWork.User.GetFirstOrDefault(u => u.NameIdentifier == id);
+            if (user != null)
             {
-                unitOfWork.User.Remove(teacher);
+                unitOfWork.User.Remove(user);
                 await unitOfWork.Save();
-                toastNotification.Information($"لقد تم حذف المستخدم {teacher.Name}");
+                toastNotification.Information($"لقد تم حذف المستخدم {user.Name}");
                 return RedirectToAction(nameof(Index));
             }
             toastNotification.Error("خطأ خلال عملية الحذف");

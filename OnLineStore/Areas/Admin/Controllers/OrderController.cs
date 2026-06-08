@@ -45,24 +45,24 @@ namespace OnLineStore.Areas.Admin.Controllers
             return View(OrderVM);
         }
      
-        public async Task<IActionResult> VoidPayment(int id)
-        {
-            var o = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == id);
-            MoyasarService.ApiKey = configuration["Moyasar:Test:SecretKey"];
-            if (o != null)
-            {
-                var payment = Payment.Fetch(o.PaymentId);
-                if (payment != null)
-                {
-                    payment = payment.Refund(payment.Amount);
-                    _unitOfWork.OrderHeader.UpdatePaymentInfo(id, payment);
-                    _unitOfWork.OrderHeader.UpdateStatus(id, StringDefault.StatusRefunded, StringDefault.PaymentStatusRefunded);
-                    await _unitOfWork.Save();
-                    toastNotification.Success($"لقد تم إلغاء الدفع للطلب {o.Id}");
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-            return RedirectToAction(nameof(Index));
-        }
+        //public async Task<IActionResult> VoidPayment(int id)
+        //{
+        //    var o = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == id);
+        //    //MoyasarService.ApiKey = configuration["Moyasar:Test:SecretKey"];
+        //    if (o != null)
+        //    {
+        //        var payment = Payment.Fetch(o.PaymentId);
+        //        if (payment != null)
+        //        {
+        //            payment = payment.Refund(payment.Amount);
+        //            _unitOfWork.OrderHeader.UpdatePaymentInfo(id, payment);
+        //            _unitOfWork.OrderHeader.UpdateStatus(id, StringDefault.StatusRefunded, StringDefault.PaymentStatusRefunded);
+        //            await _unitOfWork.Save();
+        //            toastNotification.Success($"لقد تم إلغاء الدفع للطلب {o.Id}");
+        //            return RedirectToAction(nameof(Index));
+        //        }
+        //    }
+        //    return RedirectToAction(nameof(Index));
+        //}
     }
 }

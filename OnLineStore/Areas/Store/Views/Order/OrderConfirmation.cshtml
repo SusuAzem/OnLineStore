@@ -1,7 +1,7 @@
-﻿@model _7Colors.ViewModels.PaymentResultViewModel
+﻿@model OnLineStore.ViewModels.PaymentResultViewModel
 <div class="container row">
     <div class="col-12 text-center">
-        <h1 class="@Model.Status.Contains("paid")?? text-primary : text-danger text-center">@Model.Title</h1><br />
+        <h1 class="@Model.Status!.Contains("paid")?? text-primary : text-danger text-center">@Model.Title</h1><br />
         <img src="~/images/Logo.png" width="50%" />
     </div>
     <div class="col-12 text-center summF">

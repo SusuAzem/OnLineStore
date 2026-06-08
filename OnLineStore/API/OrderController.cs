@@ -3,7 +3,8 @@
 using Core;
 
 using Data.IRepository;
-using Data.Repository;
+
+using static Business.StringDefault;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -72,16 +73,28 @@ namespace OnLineStore.API
             switch (status)
             {
                 case "pending":
-                    orderHeaders = orderHeaders.Where(u => u.Payment!.Status == StringDefault.PaymentStatusPending);
+                    orderHeaders = orderHeaders.Where(u => u.Payment!.Status == PaymentPending);
+                    break;
+                case "paid":
+                    orderHeaders = orderHeaders.Where(u => u.Payment!.Status == PaymentPaid);
+                    break;
+                case "failed":
+                    orderHeaders = orderHeaders.Where(u => u.Payment!.Status == PaymentRejected);
+                    break;
+                case "refunded":
+                    orderHeaders = orderHeaders.Where(u => u.Payment!.Status == PaymentRefunded);
                     break;
                 case "inprocess":
-                    orderHeaders = orderHeaders.Where(u => u.OrderStatus == StringDefault.StatusInProcess);
+                    orderHeaders = orderHeaders.Where(u => u.OrderStatus == OrderInProcess);
+                    break;
+                case "shipped":
+                    orderHeaders = orderHeaders.Where(u => u.OrderStatus == OrderShipped);
                     break;
                 case "completed":
-                    orderHeaders = orderHeaders.Where(u => u.OrderStatus == StringDefault.StatusShipped);
+                    orderHeaders = orderHeaders.Where(u => u.OrderStatus == OrderCompleted);
                     break;
-                case "approved":
-                    orderHeaders = orderHeaders.Where(u => u.OrderStatus == StringDefault.StatusApproved);
+                case "Cancelled":
+                    orderHeaders = orderHeaders.Where(u => u.OrderStatus == OrderCancelled);
                     break;
                 default:
                     break;
@@ -93,7 +106,7 @@ namespace OnLineStore.API
                 orderStatus = o.OrderStatus,
                 orderTotal = o.OrderTotal
             }).ToList();
-            return Json(new { data = list });
+            return new JsonResult(new { data = list });
         }
 
     }

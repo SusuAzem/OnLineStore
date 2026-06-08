@@ -1,5 +1,4 @@
-﻿using _7Colors.ViewModels;
-
+﻿
 using AspNetCoreHero.ToastNotification.Abstractions;
 
 using Business;
@@ -10,8 +9,11 @@ using Data.IRepository;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace OnLineStore.Areas.ECommerce.Controllers
-{  
+using OnLineStore.ViewModels;
+
+namespace OnLineStore.Areas.Store.Controllers
+{
+    [Area("Store")]
     public class MessagesController : Controller
     {
         private readonly IUnitOfWork unitOfWork;

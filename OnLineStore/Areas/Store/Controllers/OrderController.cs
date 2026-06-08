@@ -1,5 +1,4 @@
-﻿using _7Colors.ViewModels;
-
+﻿
 using AspNetCoreHero.ToastNotification.Abstractions;
 
 using Business;
@@ -11,11 +10,13 @@ using Data.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using OnLineStore.ViewModels;
+
 using System.Security.Claims;
 
-namespace _7Colors.Areas.ECommerce.Controllers
+namespace OnLineStore.Areas.Store.Controllers
 {
-    [Area("ECommerce")]
+    [Area("Store")]
     public class OrderController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
@@ -53,10 +54,10 @@ namespace _7Colors.Areas.ECommerce.Controllers
         {
             var VM = ShoppingCartOrder();
             VM!.OrderHeader!.OrderDate = DateTime.Now;
-            VM.OrderHeader.OrderStatus = StringDefault.StatusPending;
+            VM.OrderHeader.OrderStatus = StringDefault.OrderInProcess;
 
             unitOfWork.OrderHeader.Add(VM.OrderHeader);
-            orderService.UpdateStatus(VM.OrderHeader.Id, StringDefault.StatusPending, StringDefault.PaymentStatusPending);
+            orderService.UpdateStatus(VM.OrderHeader.Id, StringDefault.OrderInProcess, StringDefault.PaymentPending);
 
 
             // transform ShoppingCartLine to OrderItem
@@ -100,11 +101,11 @@ namespace _7Colors.Areas.ECommerce.Controllers
             {
                 return BadRequest();
             }
-            if (paymentFromDb.Status == StringDefault.PaymentStatusApproved)
+            if (paymentFromDb.Status == StringDefault.PaymentPaid)
             {
                 return await ApproveOP(orderHeader);
             }
-            else if (paymentFromDb.Status == StringDefault.PaymentStatusRejected)
+            else if (paymentFromDb.Status == StringDefault.PaymentRejected)
             {
                 return await RejectOP(orderHeader);
             }
@@ -118,11 +119,11 @@ namespace _7Colors.Areas.ECommerce.Controllers
         }
         async Task<IActionResult> ApproveOP(OrderHeader orderHeader)
         {
-            orderService.UpdateStatus(orderHeader.Id, StringDefault.StatusApproved, StringDefault.PaymentStatusApproved);
+            orderService.UpdateStatus(orderHeader.Id, StringDefault.OrderInProcess, StringDefault.PaymentPaid);
             await service.SendMailAsync(new MailData
             {
                 ToId = orderHeader.User!.Email!,
-                ToName = orderHeader.User.Name,
+                ToName = orderHeader.User.Name!,
                 Subject = "طلب جديد - الألوان السبعة",
                 Body = "\\templates\\NewOrder.html",
                 Order = orderHeader,
@@ -144,7 +145,7 @@ namespace _7Colors.Areas.ECommerce.Controllers
 
         async Task<IActionResult> RejectOP(OrderHeader orderHeader)
         {
-            orderService.UpdateStatus(orderHeader.Id, StringDefault.StatusPending, StringDefault.PaymentStatusRejected);
+            orderService.UpdateStatus(orderHeader.Id, StringDefault.OrderInProcess, StringDefault.PaymentRejected);
             await unitOfWork.Save();
             return View(new PaymentResultViewModel()
             {

@@ -1,10 +1,14 @@
-﻿using Business;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+
+using Business;
 
 using Core;
 
 using Data.IRepository;
 
 using Microsoft.AspNetCore.Mvc;
+
+using Newtonsoft.Json;
 
 namespace OnLineStore.API
 {
@@ -25,7 +29,7 @@ namespace OnLineStore.API
         public IActionResult GetAll()
         {
             var messages = unitOfWork.Message.GetAll().ToList();
-            return Json(new { data = messages });
+            return new JsonResult(new { data = messages });
         }
 
         [HttpDelete]
@@ -35,13 +39,12 @@ namespace OnLineStore.API
             if (message == null)
             {
                 toastNotification.Error("خطأ بعملية الحذف");
-                return Json(new { success = false, message = "خطأ بعملية الحذف" });
+                return BadRequest(new { success = false, message = "خطأ بعملية الحذف" });
             }
-
             unitOfWork.Message.Remove(message);
             unitOfWork.Save();
             toastNotification.Success("تم الحذف بنجاح");
-            return Json(new { success = true, message = "تم الحذف بنجاح" });
+            return Ok(new { success = true, message = "تم الحذف بنجاح" });
         }
 
     }

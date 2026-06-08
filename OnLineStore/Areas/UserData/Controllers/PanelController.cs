@@ -13,12 +13,7 @@ namespace OnLineStore.Areas.UserData.Controllers
         {
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult FrontPage()
+        public IActionResult FrontPage(string nameId)
         {
             return View();
         }

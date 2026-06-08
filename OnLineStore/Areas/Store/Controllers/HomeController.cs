@@ -1,5 +1,4 @@
-﻿using _7Colors.ViewModels;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.CodeAnalysis;
@@ -9,10 +8,11 @@ using System.ComponentModel;
 using Core;
 using Data.IRepository;
 using Business;
+using OnLineStore.ViewModels;
 
-namespace _7Colors.Areas.ECommerce.Controllers
+namespace OnLineStore.Areas.Store.Controllers
 {
-    [Area("ECommerce")]
+    [Area("Store")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> logger;
@@ -34,7 +34,7 @@ namespace _7Colors.Areas.ECommerce.Controllers
         {            
             var vm = new ProductListViewModel()
             {
-                Products = unitOfWork.Product.GetAll(includeProperties: "ProductType,SpecialTag"),
+                Products = unitOfWork.Product.GetAll(includeProperties: "ProductType"),
                 Types = unitOfWork.ProductType.GetAll()
             };
             return View(vm);
@@ -43,7 +43,7 @@ namespace _7Colors.Areas.ECommerce.Controllers
         [HttpGet]
         public JsonResult Data()
         {
-            var products = unitOfWork.Product.GetAll(includeProperties: "ProductType,SpecialTag")
+            var products = unitOfWork.Product.GetAll(includeProperties: "ProductType")
                 .Select(p =>
             new { id = p.Id, name = p.Name, img = p.Image, type = p.ProductType!.Type, price = p.Price }).ToList();
             return Json(new { data = products });
@@ -53,7 +53,7 @@ namespace _7Colors.Areas.ECommerce.Controllers
         public IActionResult Detail(int id)
         {
             var p = unitOfWork.Product.GetFirstOrDefault(u => u.Id == id,
-               includeProperties: "ProductType,SpecialTag");
+               includeProperties: "ProductType");
             ShoppingCartLineViewModel cartObj = new()
             {
                 Count = 1,
@@ -67,7 +67,7 @@ namespace _7Colors.Areas.ECommerce.Controllers
         [HttpPost]
         [ActionName("Detail")]
         [Authorize]
-        [Route("ECommerce/Home/Detail")]
+        [Route("Store/Home/Detail")]
         public async Task<ActionResult> ProductDetail(ShoppingCartLineViewModel shoppingCart)
         {
             var claim = User.Identities.FirstOrDefault()!.FindFirst(ClaimTypes.NameIdentifier)!.Value;
@@ -103,10 +103,14 @@ namespace _7Colors.Areas.ECommerce.Controllers
         [HttpGet("api/products")]
         public ActionResult GetAll()
         {
-            var objFromDb = unitOfWork.Product.GetAll(includeProperties: "ProductType,SpecialTag");
+            var objFromDb = unitOfWork.Product.GetAll(includeProperties: "ProductType");
             return Json(new { data = objFromDb });
         }
         #endregion
+        public IActionResult Info()
+        {          
+            return View();
+        }
     }
 }
 

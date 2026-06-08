@@ -1,57 +1,67 @@
-﻿<footer id="footer" class="section footer">
+﻿@using System.Globalization
+@using Business
+<footer class="border-top footer text-muted">
     <div class="container">
-        <div class="footer-container">
-            <div class="footer-center">
-                <h3>EXTRAS</h3>
-                <a href="#">Brands</a>
-                <a href="#">Gift Certificates</a>
-                <a href="#">Affiliate</a>
-                <a href="#">Specials</a>
-                <a href="#">Site Map</a>
-            </div>
-            <div class="footer-center">
-                <h3>INFORMATION</h3>
-                <a href="/UI/Blog">Our Blog</a>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms & Conditions</a>
-                <a href="/UI/Messages/New">Contact Us</a>
-                <a href="#">Site Map</a>
-            </div>
-            <div class="footer-center">
-                <h3>MY ACCOUNT</h3>
-                <a href="/Identity/Account/Login">My Account</a>
-                <a href="#">Order History</a>
-                <a href="#">Wish List</a>
-                <a href="#">Newsletter</a>
-                <a href="#">Returns</a>
-            </div>
-            <div class="footer-center">
-                <h3>CONTACT US</h3>
-                <div>
-                    <span>
-                        <i class="fas fa-map-marker-alt"></i>
-                    </span>
-                    42 Dream House, Dreammy street, 7131 Dreamville, USA
-                </div>
-                <div>
-                    <span>
-                        <i class="far fa-envelope"></i>
-                    </span>
-                    company@gmail.com
-                </div>
-                <div>
-                    <span>
-                        <i class="fas fa-phone"></i>
-                    </span>
-                    456-456-4512
-                </div>
-                <div>
-                    <span>
-                        <i class="far fa-paper-plane"></i>
-                    </span>
-                    Dream City, USA
-                </div>
+        <div class="box socials">
+            <h6 class="title">تابعونا</h6>
+            <div class="Social">
+                <ul>
+                    <li>
+                        <div class="ftrSocialIcon">
+                            <a href="" target="_blank" title="Facebook">
+                                <i class="fa fa-facebook" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="ftrSocialIcon">
+                            <a href="" target="_blank" title="Twitter">
+                                <i class="fa fa-twitter" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="ftrSocialIcon">
+                            <a href="" target="_blank" title="Linked In">
+                                <i class="fa fa-linkedin" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="ftrSocialIcon">
+                            <a href="https://www.youtube.com" target="_blank" title="Youtube">
+                                <i class="fa fa-youtube-play" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="ftrSocialIcon">
+                            <a href="https://www.instagram.com" target="_blank" title="Instagram">
+                                <i class="fa fa-instagram" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="ftrSocialIcon">
+                            <a href="https://www.tiktok.com" target="_blank" title="Tiktok">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-tiktok" viewBox="0 0 16 16">
+                                    <path d="M9 0h1.98c.144.715.54 1.617 1.235 2.512C12.895 3.389 13.797 4 15 4v2c-1.753 0-3.07-.814-4-1.829V11a5 5 0 1 1-5-5v2a3 3 0 1 0 3 3V0Z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="ftrSocialIcon">
+                            <a href="/Messages/New"><i class="fa fa-envelope"></i></a>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
+        <div id="date">
+            &copy المتجر الالكتروني
+            <br />
+            @DateTime.Now.ToString("dd / MMMM / yyyy", new CultureInfo("ar-SA")).ConvertNumerals() هجرية
+        </div>
     </div>
-</footer>
+</footer>          

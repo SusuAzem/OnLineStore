@@ -3,7 +3,6 @@
 @using Microsoft.Extensions.Options
 @using System.Globalization
 
-}
 @{
     ViewData["Title"] = "تفاصيل الطلب";
 }
@@ -48,8 +47,8 @@
                                 <label>موعد الدفع</label>
                             </div>
                             <div class="col-8">
-                                <input class="form-control" readonly value="@Model.OrderHeader!.PaymentDate.ToString("dd/MM/yy-hh:mm")" />
-                                <span asp-validation-for="OrderHeader!.PaymentDate" class="text-danger"></span>
+                                <input class="form-control" readonly value="@Model.Payment!.Date.ToString("dd/MM/yy-hh:mm")" />
+                                <span asp-validation-for="Payment!.Date" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="row my-1">
@@ -57,8 +56,8 @@
                                 <label>انتهاء الدفع</label>
                             </div>
                             <div class="col-8">
-                                <input class="form-control" readonly value="@Model.OrderHeader!.PaymentDueDate.ToString("dd/MM/yy-hh:mm")" />
-                                <span asp-validation-for="OrderHeader!.PaymentDueDate" class="text-danger"></span>
+                                <input class="form-control" readonly value="@Model.Payment!.DueDate.ToString("dd/MM/yy-hh:mm")" />
+                                <span asp-validation-for="Payment!.DueDate" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="row my-1">
@@ -66,8 +65,8 @@
                                 <label>حالة الدفع</label>
                             </div>
                             <div class="col-8">
-                                <input asp-for="OrderHeader!.PaymentStatus" class="form-control bg-gray-white" />
-                                <span asp-validation-for="OrderHeader!.PaymentStatus" class="text-danger"></span>
+                                <input asp-for="Payment!.Status" class="form-control bg-gray-white" />
+                                <span asp-validation-for="Payment!.Status" class="text-danger"></span>
                             </div>
                         </div>
 
@@ -131,8 +130,8 @@
                                 <label>الشارع</label>
                             </div>
                             <div class="col-8">
-                                <input asp-for="OrderHeader!.User!.StreetAddress" class="form-control" readonly />
-                                <span asp-validation-for="OrderHeader!.User!.StreetAddress" class="text-danger"></span>
+                                <input asp-for="User!.StreetAddress" class="form-control" readonly />
+                                <span asp-validation-for="User!.StreetAddress" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="row my-1">
@@ -140,8 +139,8 @@
                                 <label>المدينة</label>
                             </div>
                             <div class="col-8">
-                                <input asp-for="OrderHeader!.User!.City" class="form-control" readonly />
-                                <span asp-validation-for="OrderHeader!.User!.City" class="text-danger"></span>
+                                <input asp-for="User!.City" class="form-control" readonly />
+                                <span asp-validation-for="User!.City" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="row my-1">
@@ -149,8 +148,8 @@
                                 <label>الرمز البريدي</label>
                             </div>
                             <div class="col-8">
-                                <input asp-for="OrderHeader!.User!.PostalCode" class="form-control" readonly />
-                                <span asp-validation-for="OrderHeader!.User!.PostalCode" class="text-danger"></span>
+                                <input asp-for="User!.PostalCode" class="form-control" readonly />
+                                <span asp-validation-for="User!.PostalCode" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
@@ -166,12 +165,15 @@
                                         <h6 class="my-0">@details.Product!.Name</h6>
                                         <small class="text-muted">الكمية: @details.Count</small>
                                     </div>
-                                    <span class="text-muted my-2">المجموع الجزئي: @details.ItemsPrice.ToString("c", new CultureInfo("ar-SA")).ConvertNumerals()</span>
+                                    @{
+                                        var price = details.Count * details.Product!.Price;
+                                    }
+                                    <span class="text-muted my-2">المجموع الجزئي: @price.ToString("c", new CultureInfo("ar-SY")).ConvertNumerals()</span>
                                 </li>
                             }
                             <li class="list-group-item bg-light">
                                 <small class="text-info">المجموع الكلي: </small>
-                                <strong class="text-info">@Model.OrderHeader!.OrderTotal.ToString("c", new CultureInfo("ar-SA")).ConvertNumerals()</strong>
+                                <strong class="text-info">@Model.OrderHeader!.OrderTotal.ToString("c", new CultureInfo("ar-SY")).ConvertNumerals()</strong>
                             </li>
                         </ul>
                     </div>

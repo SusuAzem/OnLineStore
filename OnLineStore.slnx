@@ -1,7 +1,6 @@
 <Solution>
-  <Project Path="../7Colors/7Colors/7Colors.csproj" />
-  <Project Path="../7Colors/Business/Business.csproj" />
-  <Project Path="../7Colors/Core/Core.csproj" />
-  <Project Path="../7Colors/Data/Data.csproj" />
+  <Project Path="Business/Business.csproj" />
+  <Project Path="Core/Core.csproj" />
+  <Project Path="Data/Data.csproj" />
   <Project Path="OnLineStore/OnLineStore.csproj" />
 </Solution>

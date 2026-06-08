@@ -11,7 +11,6 @@ namespace OnLineStore.Profiles
         public UserProfile()
         {
             CreateMap<User, UserViewModel>();
-            CreateMap<Client, ClientViewModel>();
         }
     }
 }

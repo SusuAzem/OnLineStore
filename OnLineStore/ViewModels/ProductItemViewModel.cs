@@ -12,11 +12,11 @@ namespace OnLineStore.ViewModels
 
         [Required(ErrorMessage ="حقل الاسم مطلوب")]
         [Display(Name = "الاسم")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Required(ErrorMessage = "حقل السعر مطلوب")] 
         [Display(Name = "السعر")]
-        public float Price { get; set; }
+        public decimal Price { get; set; }
 
         [ValidateNever]
         [Display(Name = "الصورة")]
@@ -24,7 +24,7 @@ namespace OnLineStore.ViewModels
 
         [Required(ErrorMessage = "حقل اللون مطلوب")]
         [Display(Name = "اللون")]
-        public string ProductColor { get; set; }
+        public string? ProductColor { get; set; }
 
         [Required(ErrorMessage = "حقل توفر المنتج مطلوب")]
         [Display(Name = "متوفر؟")]

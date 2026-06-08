@@ -10,7 +10,7 @@ namespace OnLineStore.ViewModels
         public int Id { get; set; }
 
         public int ProductId { get; set; }
-        public ProductItemViewModel Product { get; set; }
+        public ProductItemViewModel? Product { get; set; }
 
         [Display(Name = "الكمية")]
         [Range(1, 1000, ErrorMessage = "الرجاء إدخال رقم بين 1 و 1000")]
@@ -22,6 +22,6 @@ namespace OnLineStore.ViewModels
 
 
         [Display(Name = "السعر")]
-        public float LinePrice { get; set; }
+        public decimal LinePrice { get; set; }
     }
 }

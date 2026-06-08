@@ -173,7 +173,7 @@ main {
 
 /*nav*/
 .navbar-brand {
-    height: 160px;
+    /*height: 160px;
     width: 150px;
     background-color: rgba(0, 0, 0, 0);
     background-position-x: 0%;
@@ -185,12 +185,12 @@ main {
     background-origin: padding-box;
     background-clip: border-box;
     margin-left: 15px;
-    margin-right: 40px
+    margin-right: 40px*/
 }
 
-img.navbar-brand {
-    height: 150px;
-    width: 150px;
+img.logo {
+    height: auto;
+    width: 15vw;
 }
 
 .navbar-nav .active a {
@@ -199,8 +199,11 @@ img.navbar-brand {
     background-color: ActiveCaption;
 }
 
-.loging {
+.nav-item.cart {
     margin-right: auto;
+}
+.loging {
+    /*margin-right: auto;*/
     margin-left: 30px;
 }
 
