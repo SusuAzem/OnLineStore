@@ -4,9 +4,9 @@ namespace OnLineStore.ViewModels
 {
     public class OrderViewModel
     {
-        public OrderHeader? OrderHeader { get; set; }
-        public User? User { get; set; }
-        public Payment? Payment { get; set; }
-        public IEnumerable<OrderItem>? OrderItems { get; set; }
+        public OrderHeaderViewModel? OrderHeader { get; set; }
+        public UserViewModel? User { get; set; }
+        public PaymentViewModel? Payment { get; set; }
+        public IEnumerable<OrderItemViewModel>? OrderItems { get; set; }
     }
 }

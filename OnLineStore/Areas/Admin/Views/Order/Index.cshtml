@@ -39,19 +39,19 @@
         </div>
         <div class="p-2">
             <ul class="list-group list-group-horizontal-sm" style="font-size:1vw">
-                <a asp-controller="Order" asp-action="Index" asp-route-status="inprocess">
+                <a asp-area="Admin" asp-controller="Order" asp-action="Index" asp-route-status="inprocess">
                 <li class="list-group-item @inprocess">InProcess قيد التنفيذ</li>
                 </a>
-                <a asp-controller="Order" asp-action="Index" asp-route-status="pending">
+                <a asp-area="Admin" asp-controller="Order" asp-action="Index" asp-route-status="pending">
                 <li class="list-group-item @pending">Pending قيد إتمام الدفع</li>
                 </a>
-                <a asp-controller="Order" asp-action="Index" asp-route-status="completed">
+                <a asp-area="Admin" asp-controller="Order" asp-action="Index" asp-route-status="completed">
                 <li class="list-group-item @completed">Completed مكتمل</li>
                 </a>
-                <a asp-controller="Order" asp-action="Index" asp-route-status="approved">
+                <a asp-area="Admin" asp-controller="Order" asp-action="Index" asp-route-status="approved">
                 <li class="list-group-item @approved">Approved تم القبول</li>
                 </a>
-                <a asp-controller="Order" asp-action="Index" asp-route-status="all">
+                <a asp-area="Admin" asp-controller="Order" asp-action="Index" asp-route-status="all">
                 <li class="list-group-item @all">All الكل</li>
                 </a>
             </ul>

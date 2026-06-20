@@ -56,14 +56,10 @@
                                 return `
                                                     <td style = "width:150px">
                                                         <div class="btn-group">
-                                                            <a class="btn" title="تعيين المستخدم كمعلم"
-                                                                href="/Admin/Users/Upgrade/${data.id}">
+                                                            <a class="btn" title="تعيين المستخدم كمسؤول"
+                                                                href="/Admin/Users/AssignAdmin/${data.id}">
                                                                 <i class="fa fa-arrow-up" ></i>
-                                                            </a>
-                                                            <a class="btn" title="تعيين المستخدم كطالب"
-                                                                        href="/Admin/Users/Downgrade/${data.id}">
-                                                                <i class="fa fa-arrow-down"></i>
-                                                            </a>
+                                                            </a>                                                        
                                                             <a href="/Admin/Users/LockUnlock/${data.id}"
                                                                     class="btn danger" title="تفعيل المستخدم">
                                                                 <i class="fa fa-unlock-alt"></i>
@@ -80,14 +76,10 @@
                                 return `
                                                 <td style = "width:150px">
                                                     <div class="btn-group">
-                                                        <a class="btn" title="تعيين المستخدم كمعلم"
-                                                            href="/Admin/Users/Upgrade/${data.id} ">
+                                                        <a class="btn" title="تعيين المستخدم كمسؤول"
+                                                                href="/Admin/Users/AssignAdmin/${data.id}">
                                                             <i class="fa fa-arrow-up" ></i>
-                                                        </a>
-                                                        <a class="btn" title="تعيين المستخدم كطالب"
-                                                                    href="/Admin/Users/Downgrade/${data.id}">
-                                                            <i class="fa fa-arrow-down"></i>
-                                                        </a>
+                                                        </a>                                                
                                                         <a class="btn danger" title="حجب المستخدم"
                                                                 href="/Admin/Users/LockUnlock/${data.id} ">
                                                                 <i class="fa fa-lock"></i>

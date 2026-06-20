@@ -1,22 +1,26 @@
 ﻿@using System.Globalization
+@using OnLineStore.ViewModels
 @model IEnumerable<OnLineStore.ViewModels.ProductItemViewModel>
 
 @{
     ViewData["Title"] = "قائمة المنتجات";
+    var activePage = "Products";
+    var area = "Admin";
 }
 
 <div class="d-flex" id="wrapper">
     <partial name="_Navbar" />
-    <!-- /#sidebar-wrapper -->
     <!-- Page Content -->
-    <div id="page-content-wrapper">     
+    <div id="page-content-wrapper">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-6">
                     <h4 class="text-info">@ViewData["Title"]</h4>
                 </div>
                 <div class="col-lg-6">
-                    <a asp-action="Create" class="btn"><i class="fa fa-plus"></i>&nbsp; إضافة</a>
+                    <a asp-area="Admin" asp-controller="Products" asp-action="Create" class="btn">
+                        <i class="fa fa-plus"></i>&nbsp; إضافة
+                    </a>
                 </div>
             </div>
             <br />
@@ -26,12 +30,11 @@
                         <tr class="table-info">
                             <th>@Html.DisplayNameFor(c => c.Name)</th>
                             <th>@Html.DisplayNameFor(c => c.Price)</th>
-                            <th>@Html.DisplayNameFor(c=>c.Image)</th>
+                            <th>@Html.DisplayNameFor(c => c.Image)</th>
                             @* <th>@Html.DisplayNameFor(c => c.ProductColor) </th>
                             <th>@Html.DisplayNameFor(c => c.IsAvailable)</th>
                             <th>@Html.DisplayNameFor(c => c.IsPublished)</th>
-                            <th>@Html.DisplayNameFor(c => c.TypeId)</th>
-                            <th>@Html.DisplayNameFor(c => c.TagId)</th> *@
+                            <th>@Html.DisplayNameFor(c => c.TypeId)</th>*@
                             <th width="140px">خيارات</th>
                         </tr>
                     </thead>
@@ -40,17 +43,23 @@
                         {
                             <tr>
                                 <td>@item.Name</td>
-                                <td>@item.Price.ToString("c", new CultureInfo("ar-SA")).ConvertNumerals() </td>
+                                <td>@item.Price.ToString("c", new CultureInfo("ar-SY")).ConvertNumerals() </td>
                                 <td id="img" style="background-color: @((item.Image!.Contains("noimage")) ? "darksalmon" : "var(--bs-table-bg)")">
-                                    <img src="@item.Image" /></td>
-                              @*   <td>@item.ProductColor</td>
+                                    <img src="@item.Image" />
+                                </td>
+                                @*   <td>@item.ProductColor</td>
                                 <td style="background-color: @(item.IsAvailable? "var(--bs-table-bg)" : "darksalmon")">
                                     @item.IsAvailable.ConvertLogic()</td>
                                 <td style="background-color: @(item.IsPublished? "var(--bs-table-bg)" : "darksalmon")">
                                     @item.IsPublished.ConvertLogic()</td>
                                 <td>@item.ProductType?.Type</td>
                                 <td>@item.SpecialTag?.Name</td> *@
-                                <partial name="_Buttons" model="@item.Id" />
+                                <partial name="_Buttons" model="@new ButtonViewModel
+                                         {
+                                             ItemId = item.Id,
+                                             Controller = activePage,
+                                             Area = area
+                                         }" />
                             </tr>
                         }
                     </tbody>
@@ -61,6 +70,6 @@
     <!-- /#wrapper -->
 </div>
 
-@section scripts{
+@section scripts {
     <script src="~/js/indextable.js"></script>
 }

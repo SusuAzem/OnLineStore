@@ -1,14 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using Microsoft.CodeAnalysis;
-using AspNetCoreHero.ToastNotification.Abstractions;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+
 using AutoMapper;
-using System.ComponentModel;
-using Core;
-using Data.IRepository;
+
 using Business;
+
+using Core;
+
+using Data.IRepository;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Evaluation;
+using Microsoft.CodeAnalysis;
+
 using OnLineStore.ViewModels;
+
+using System.ComponentModel;
+using System.Security.Claims;
 
 namespace OnLineStore.Areas.Store.Controllers
 {
@@ -31,22 +39,15 @@ namespace OnLineStore.Areas.Store.Controllers
             this.toastNotification = toastNotification;
         }
         public IActionResult Index()
-        {            
+        {
+            var products = unitOfWork.Product.GetAll(includeProperties: "ProductType");
+            var productTypes = unitOfWork.ProductType.GetAll();
             var vm = new ProductListViewModel()
             {
-                Products = unitOfWork.Product.GetAll(includeProperties: "ProductType"),
-                Types = unitOfWork.ProductType.GetAll()
+                Products = mapper.Map<IEnumerable<ProductItemViewModel>>(products),
+                Types = mapper.Map<IEnumerable<ProductTypeViewModel>>(productTypes)
             };
             return View(vm);
-        }
-
-        [HttpGet]
-        public JsonResult Data()
-        {
-            var products = unitOfWork.Product.GetAll(includeProperties: "ProductType")
-                .Select(p =>
-            new { id = p.Id, name = p.Name, img = p.Image, type = p.ProductType!.Type, price = p.Price }).ToList();
-            return Json(new { data = products });
         }
 
         [HttpGet]
@@ -61,6 +62,9 @@ namespace OnLineStore.Areas.Store.Controllers
                 LinePrice = p.Price,
                 Product = mapper.Map<ProductItemViewModel>(p),
             };
+            ViewBag.Title = $"{p.Name}";
+            ViewBag.Description = $"أفضل العروض لـ {p.Name}. {p.ProductType}";
+            ViewBag.Keywords = $"{p.ProductType}, online shopping, {p.Name}, متجر الكتروني";
             return View(cartObj);
         }
 
@@ -96,15 +100,24 @@ namespace OnLineStore.Areas.Store.Controllers
                        unitOfWork.ShoppingCartLine.GetAll(u => u.UserNameIdentifier == claim).ToList().Count);                               
                 toastNotification.Success("لقد تم إضافة المنتج إلى سلة مشترياتك");
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index),"Home", new {area="Store"});
         }
         
         #region API CALLS
+        //[HttpGet("api/products")]
+        //public ActionResult GetAll()
+        //{
+        //    var objFromDb = unitOfWork.Product.GetAll(includeProperties: "ProductType");
+        //    return Json(new { data = objFromDb });
+        //}
+
         [HttpGet("api/products")]
-        public ActionResult GetAll()
+        public JsonResult Data()
         {
-            var objFromDb = unitOfWork.Product.GetAll(includeProperties: "ProductType");
-            return Json(new { data = objFromDb });
+            var products = unitOfWork.Product.GetAll(includeProperties: "ProductType")
+                .Select(p =>
+            new { id = p.Id, name = p.Name, img = p.Image, type = p.ProductType!.Type, price = p.Price }).ToList();
+            return Json(new { data = products });
         }
         #endregion
         public IActionResult Info()

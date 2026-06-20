@@ -6,6 +6,7 @@ using Data.Repository;
 using MailKit;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,12 @@ namespace Business
         }
         public async Task<User> HalfReg(List<Claim> claims)
         {
+            var id = claims.Find(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+            var u = unitOfWork.User.GetFirstOrDefault(u => u.NameIdentifier == id);
+            if ( u != null) {
+                claims.Add(new Claim(type: "Role", u.Role!));
+                return u;
+            }
             var user = new User(
                     nameidentifier: claims.Find(c => c.Type == ClaimTypes.NameIdentifier)!.Value,
                     name: claims.Find(c => c.Type == ClaimTypes.Name)!.Value,

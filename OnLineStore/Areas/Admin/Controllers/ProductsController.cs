@@ -33,7 +33,7 @@ namespace OnLineStore.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            var products = unitOfWork.Product.GetAll(includeProperties: "ProductType,SpecialTag");
+            var products = unitOfWork.Product.GetAll(includeProperties: "ProductType");
             List<ProductItemViewModel> list = new();
             foreach (var item in products)
             {
@@ -81,7 +81,7 @@ namespace OnLineStore.Areas.Admin.Controllers
                 unitOfWork.Product.Add(p);
                 await unitOfWork.Save();
                 toastNotification.Success("لقد تم إضافة المنتج");
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "Products", new {area = "Admin"});
             }
             pro.ProductTypeList = types;
             return View(pro);
@@ -94,7 +94,7 @@ namespace OnLineStore.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            var pro = unitOfWork.Product.GetFirstOrDefault(c => c.Id == id, "ProductType,SpecialTag");
+            var pro = unitOfWork.Product.GetFirstOrDefault(c => c.Id == id, "ProductType");
             if (pro == null)
             {
                 return NotFound();
@@ -135,7 +135,7 @@ namespace OnLineStore.Areas.Admin.Controllers
                     System.IO.File.Delete(oldpath);
                 }
                 toastNotification.Success("لقد تم تعديل المنتج");
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "Products", new {area="Admin"});
             }
             return View(pro);
         }
@@ -146,7 +146,7 @@ namespace OnLineStore.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            var pro = unitOfWork.Product.GetFirstOrDefault(c => c.Id == id, "ProductType,SpecialTag");
+            var pro = unitOfWork.Product.GetFirstOrDefault(c => c.Id == id, "ProductType");
             if (pro == null)
             {
                 return NotFound();
@@ -161,7 +161,7 @@ namespace OnLineStore.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            var pro = unitOfWork.Product.GetFirstOrDefault(c => c.Id == id, "ProductType,SpecialTag");
+            var pro = unitOfWork.Product.GetFirstOrDefault(c => c.Id == id, "ProductType");
             if (pro == null)
             {
                 return NotFound();
@@ -195,7 +195,7 @@ namespace OnLineStore.Areas.Admin.Controllers
                     System.IO.File.Delete(fullPath);
                 }
                 toastNotification.Information("لقد تم حذف المنتج");
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "Products", new { area = "Admin" });
             }
             return View(pro);
         }
@@ -204,7 +204,7 @@ namespace OnLineStore.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var productList = unitOfWork.Product.GetAll(includeProperties: "ProductType,SpecialTag");
+            var productList = unitOfWork.Product.GetAll(includeProperties: "ProductType");
             return Json(new { data = productList });
         }      
         #endregion

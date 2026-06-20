@@ -4,8 +4,8 @@ namespace OnLineStore.ViewModels
 {
     public class ShoppingCartViewModel
     {
-        public OrderHeader? OrderHeader { get; set; }
-        public IEnumerable<ShoppingCartLine>? ListCart { get; set; }
+        public OrderHeaderViewModel? OrderHeader { get; set; }
+        public IEnumerable<ShoppingCartLineViewModel>? ListCart { get; set; }
 
 }
 }

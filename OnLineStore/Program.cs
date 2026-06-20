@@ -29,7 +29,8 @@ builder.Services.AddDbContext<AppDbContext>(op =>
     op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddAutoMapper(cfg => { },
     typeof(ProductProfile),
-    typeof(UserProfile));
+    typeof(UserProfile),
+    typeof(ProductTypeProfile));
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -37,10 +38,12 @@ builder.Configuration
    .AddJsonFile("appsettings.Production.json", optional: true, reloadOnChange: true)
    .AddEnvironmentVariables();
 builder.Services.Configure<LibraryOptions>(builder.Configuration.GetSection("Path:Images"));
+builder.Services.Configure<PaymentOptions>(builder.Configuration.GetSection("ShamCash:ApiKey"));
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("Settings"));
 builder.Services.AddTransient<IMailService, MailService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IFileManager, FileManager>();
+builder.Services.AddTransient<IShamCashService, ShamCashService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddDataProtection()
@@ -65,11 +68,30 @@ builder.Services.AddAuthentication(options =>
     // Set Google as the default challenge (login) scheme
     options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
 })
-.AddCookie()
+.AddCookie(options =>
+{
+    options.LoginPath = "/Store/Account/Login"; 
+})
 .AddGoogle(GoogleDefaults.AuthenticationScheme,options =>
 {
     options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
     options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
+    options.AccessDeniedPath = "/Store/Account/AccessDenied";
+    options.Events.OnCreatingTicket = async context =>
+    {
+        var dbContext = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+        var googleEmail = context.Principal?.FindFirst(ClaimTypes.Email)?.Value;
+        if (!string.IsNullOrEmpty(googleEmail))
+        {
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == googleEmail);
+            if (user != null)
+            {
+                // Inject the stored database role into the authentication cookie ticket
+                var identity = (ClaimsIdentity)context.Principal!.Identity!;
+                identity.AddClaim(new Claim(ClaimTypes.Role, user.Role!));
+            }
+        }
+    };
 });
 builder.Services.AddAuthorizationBuilder()
    .AddPolicy("Admin", policy =>
@@ -105,9 +127,17 @@ app.UseAuthorization();
 app.UseNotyf();
 
 app.MapControllerRoute(
+    name: "defaultArea",
+    pattern: "{controller=Home}/{action=Index}/{id?}",
+    defaults: new { area = "Store" }
+);
+
+app.MapControllerRoute(
     name: "areasOnly",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
 );
+
+app.MapGet("/", () => Results.Redirect("/Store/Home/Index"));
 
 app.Run();
 

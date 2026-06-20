@@ -1,7 +1,10 @@
-﻿@model IEnumerable<Core.ProductType>
+﻿@using OnLineStore.ViewModels
+@model IEnumerable<ProductTypeViewModel>
 
 @{
     ViewData["Title"] = "أنواع المنتجات";
+    var activePage = "ProductTypes";
+    var area = "Admin";
 }
 <div class="d-flex" id="wrapper">
     <partial name="_Navbar" />
@@ -25,19 +28,20 @@
                         <tr class="table-info">
                             <th>
                                 @Html.DisplayNameFor(c => c.Type)
-                            </th>
-                           
+                            </th>                        
                             <th>خيارات</th>
                         </tr>
                         @foreach (var item in Model)
                         {
                             <tr>
                                 <td>@item.Type</td>
-
-                                <partial name="_Buttons" model="@item.Id" />
-
+                                <partial name="_Buttons" model="new ButtonViewModel { 
+                                             ItemId = item.Id, 
+                                             Controller = activePage,
+                                             Area = area,
+                                             B2 = true
+                                            }" />
                             </tr>
-
                         }
                     </thead>
                 </table>

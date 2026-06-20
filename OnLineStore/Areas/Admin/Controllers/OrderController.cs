@@ -1,13 +1,17 @@
-﻿using OnLineStore.ViewModels;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
 
-using AspNetCoreHero.ToastNotification.Abstractions;
+using AutoMapper;
 
 using Business;
+
+using Core;
 
 using Data.IRepository;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using OnLineStore.ViewModels;
 
 namespace OnLineStore.Areas.Admin.Controllers
 {
@@ -18,15 +22,17 @@ namespace OnLineStore.Areas.Admin.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly INotyfService toastNotification;
         private readonly IConfiguration configuration;
+        private readonly IMapper mapper;
 
         [BindProperty]
         public OrderViewModel? OrderVM { get; set; }
         public OrderController(IUnitOfWork unitOfWork, IConfiguration configuration, 
-            INotyfService toastNotification)
+            INotyfService toastNotification, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             this.configuration = configuration;
             this.toastNotification = toastNotification;
+            this.mapper = mapper;
         }
         public IActionResult Index()
         {
@@ -35,23 +41,23 @@ namespace OnLineStore.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Details(int orderId)
         {
+            var orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == orderId, includeProperties: "User");
+            var items = _unitOfWork.OrderItem.GetAll(o => o.OrderHeaderId == orderId, includeProperties: "Product");
             OrderVM = new OrderViewModel()
             {
-                OrderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == orderId,
-                              includeProperties: "User"),
-                OrderItems = _unitOfWork.OrderItem.GetAll(o => o.OrderHeaderId == orderId,
-                            includeProperties: "Product")
+                OrderHeader =  mapper.Map<OrderHeaderViewModel>(orderHeader),
+                OrderItems = mapper.Map<IEnumerable<OrderItemViewModel>>(items)
             };
             return View(OrderVM);
         }
-     
+
         //public async Task<IActionResult> VoidPayment(int id)
         //{
         //    var o = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == id);
         //    //MoyasarService.ApiKey = configuration["Moyasar:Test:SecretKey"];
         //    if (o != null)
         //    {
-        //        var payment = Payment.Fetch(o.PaymentId);
+        //        var payment = new Payment(o.PaymentId);
         //        if (payment != null)
         //        {
         //            payment = payment.Refund(payment.Amount);

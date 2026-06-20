@@ -1,4 +1,5 @@
-﻿@model OnLineStore.ViewModels.ProductViewModel
+﻿@using OnLineStore.ViewModels
+@model ProductViewModel
 
 @{
     ViewData["Title"] = "إضافة منتج جديد";
@@ -11,7 +12,7 @@
     <div id="page-content-wrapper">
         <div class="container-fluid">
             <h4 class="text-info">@ViewData["Title"] </h4>
-            <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <form asp-area="Admin" asp-controller="Products" asp-action="Create" method="post" enctype="multipart/form-data">
                 <div class="p-4 rounded border row">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <h4>@ViewBag.message</h4>
@@ -29,7 +30,7 @@
                             <label asp-for="Product!.Price"></label>
                         </div>
                         <div class="col-8">
-                            <input asp-for="Product!.Price" class="form-control" />
+                            <input asp-for="Product!.Price" class="form-control" onfocus="this.value = ' ' " onblur="this.value = this.value === ' ' ? '0.00' : this.value" />
                         </div>
                         <span asp-validation-for="Product!.Price" class="text-danger"></span>
                     </div>
@@ -47,7 +48,7 @@
                             <label asp-for="Product!.ProductColor"></label>
                         </div>
                         <div class="col-8">
-                            <input asp-for="Product!.ProductColor" class="form-control" />
+                            <input asp-for="Product!.ProductColor" class="form-control" type="color" value="" />
                         </div>
                         <span asp-validation-for="Product!.ProductColor" class="text-danger"></span>
                     </div>
@@ -82,8 +83,8 @@
                     <br />
                     <br />
                     <div class="form-group">
-                        <input class="btn" type="submit" value="حفظ" />
-                        <a asp-action="Index" class="btn">عودة للقائمة</a>
+                        <button class="btn" type="submit"> حفظ</button>
+                        <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="btn">عودة للقائمة</a>
                     </div>
                 </div>
             </form>

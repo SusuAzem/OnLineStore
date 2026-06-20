@@ -1,12 +1,15 @@
 ﻿@using System.Security.Claims
+@using Business
 @{
-    string? nameId = null;
+    string? nameId =null;
+    string? isAdmin = null;
     if (User.Identity!.IsAuthenticated)
     {
         nameId = User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.NameIdentifier)!.Value;
+        isAdmin = User.Claims.FirstOrDefault(m => m.Type == ClaimTypes.Email)!.Value == StringDefault.AdminEmail ? "mr-auto" : "";
     }
 }
-<ul class="navbar-nav loging">
+<ul class="navbar-nav loging @isAdmin">
     @if (User.Identity!.IsAuthenticated)
     {
         <li class="nav-item ">

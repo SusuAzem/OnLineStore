@@ -22,7 +22,7 @@ function submitData(e) {
         alert("الرجاء كتابة المحتوى ");
         return false;
     }
-    fetch("/Messages/Create", {
+    fetch("/Store/Messages/Create", {
         method: "POST",
         headers: {
             Accept: "application/json, text/plain, */*",

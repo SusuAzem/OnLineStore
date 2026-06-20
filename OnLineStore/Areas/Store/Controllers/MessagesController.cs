@@ -71,7 +71,7 @@ namespace OnLineStore.Areas.Store.Controllers
                 unitOfWork.Message.Add(ms);
                 await unitOfWork.Save();
                 toastNotification.Success("لقد تم استلام الرسالة");
-                return Json(new { IsSuccess = "redirect", description = Url.Action("Home", "Index", new { id = message.Id }), message });
+                return Json(new { IsSuccess = "redirect", description = Url.Action("Home", "Index", new { id = message.Id, area = "Store" }), message });
             }
 
         }                        

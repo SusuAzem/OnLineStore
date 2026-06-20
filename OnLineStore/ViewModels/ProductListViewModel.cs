@@ -15,9 +15,9 @@ namespace OnLineStore.ViewModels
     /// </summary>
     public class ProductListViewModel
     {
-        public IEnumerable<Product>? Products { get; set; }
+        public IEnumerable<ProductItemViewModel>? Products { get; set; }
 
-        public IEnumerable<ProductType>? Types { get; set; }
+        public IEnumerable<ProductTypeViewModel>? Types { get; set; }
 
     }
 }

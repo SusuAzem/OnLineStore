@@ -1,4 +1,5 @@
-const baseURL = "/ECommerce/Home/Data";
+// const baseURL = "/Store/Home/Data";
+const baseURL = "api/products";
 const newProduct = document.getElementById("newProducts");
 const btnContainer = document.getElementById("btnContainer");
 const btns = document.querySelectorAll(".mybtn");
@@ -31,13 +32,7 @@ for (let i = 0; i < btns.length; i++) {
         displayProducts(filterProducts);
     });
 }
-//<ul class="icons">
-//    <li>
-//        <a href="/ECommerce/Home/AddToCart/${product.id}">
-//            <i class="fa fa-shopping-bag"></i>
-//        </a>
-//    </li>
-//</ul>
+
 const displayProducts = (products) => {
     const htmlTemplate = products
         .map((product) => {
@@ -50,8 +45,8 @@ const displayProducts = (products) => {
                             <div class="card-body">
                                 <h6>${product.name}</h6>
                                 <h7>${product.type}</h7>
-                                <h7 class="price">السعر: ${product.price} رس</h7>
-                                <a href="/ECommerce/Home/Detail/${product.id}" class = "btn">تفاصيل المنتج</a>                                
+                                <h7 class="price">السعر: ${product.price} ل س</h7>
+                                <a href="/Store/Home/Detail/${product.id}" class = "btn">تفاصيل المنتج</a>                                
                             </div>
                         </div>
                     </div>

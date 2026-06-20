@@ -13,8 +13,5 @@ namespace OnLineStore.ViewModels
 
         [ValidateNever]
         public IEnumerable<SelectListItem>? ProductTypeList { get; set; }
-
-        [ValidateNever]
-        public IEnumerable<SelectListItem>? SpecialTagList { get; set; }
     }
 }

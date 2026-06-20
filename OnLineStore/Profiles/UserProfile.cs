@@ -10,7 +10,7 @@ namespace OnLineStore.Profiles
     {
         public UserProfile()
         {
-            CreateMap<User, UserViewModel>();
+            CreateMap<User, UserViewModel>().ReverseMap();
         }
     }
 }

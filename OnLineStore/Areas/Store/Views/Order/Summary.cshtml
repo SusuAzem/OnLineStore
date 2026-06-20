@@ -4,7 +4,7 @@
 @using System.Globalization
 
 
-<form method="post" asp-action="Summary">
+<form asp-area="Store" asp-controller="Order" method="post" asp-action="Summary">
     <br />
     <div class="container">
         <div class="card summC">
@@ -92,7 +92,7 @@
             <div class="card-footer w-100">
                 <div class="row">
                     <div class="col-12 col-md-3">
-                        <a asp-action="Index" asp-controller="Order" class="btn">العودة لعربتك </a>
+                        <a asp-area="Store" asp-action="Index" asp-controller="Order" class="btn">العودة لعربتك </a>
                     </div>
                     <div class="col-12 col-md-6 pt-2">                       
                         <p class="summF">
@@ -101,7 +101,7 @@
                         </p>
                     </div>
                     <div class="col-12 col-md-3">
-                        <input type="submit" value="تأكيد الدفع" class="btn" />                        
+                        <button type="submit" class="btn">تأكيد الدفع</button>
                     </div>
                 </div>
             </div>

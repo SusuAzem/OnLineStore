@@ -9,9 +9,6 @@ $(document).ready(function () {
             if (url.includes("pending")) {
                 loadDataTable("pending");
             } else {
-                if (url.includes("approved")) {
-                    loadDataTable("approved");
-                } else {
                     loadDataTable("all");
                 }
             }
@@ -22,7 +19,7 @@ $(document).ready(function () {
 function loadDataTable(status) {
     $("#tblData").DataTable({
         ajax: {
-            url: "/Admin/Order/GetAll?status=" + status,
+            url: "/api/Order/GetAll?status=" + status,
         },
         columns: [
             { data: "id", width: "5%" },

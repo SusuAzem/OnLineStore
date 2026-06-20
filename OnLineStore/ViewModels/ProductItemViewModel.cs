@@ -37,7 +37,7 @@ namespace OnLineStore.ViewModels
         [Required(ErrorMessage ="حقل نوع المنتج مطلوب")]
         [Display(Name = "نوع المنتج")]
         public int TypeId { get; set; }
-        public ProductType? ProductType { get; set; }
+        public ProductTypeViewModel? ProductType { get; set; }
 
     }
 }

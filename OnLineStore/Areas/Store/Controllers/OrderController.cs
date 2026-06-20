@@ -1,6 +1,8 @@
 ﻿
 using AspNetCoreHero.ToastNotification.Abstractions;
 
+using AutoMapper;
+
 using Business;
 
 using Core;
@@ -24,17 +26,21 @@ namespace OnLineStore.Areas.Store.Controllers
         private readonly IConfiguration configuration;
         private readonly INotyfService toastNotification;
         private readonly IOrderService orderService;
+        private readonly IMapper mapper;
+        private readonly IShamCashService cashService;
 
         [BindProperty]
         public ShoppingCartViewModel? VM { get; set; }
         public OrderController(IUnitOfWork unitOfWork, IMailService service,
-            IConfiguration configuration, INotyfService toastNotification, IOrderService orderService)
+            IConfiguration configuration, INotyfService toastNotification, IOrderService orderService, IMapper mapper, IShamCashService cashService)
         {
             this.unitOfWork = unitOfWork;
             this.service = service;
             this.configuration = configuration;
             this.toastNotification = toastNotification;
             this.orderService = orderService;
+            this.mapper = mapper;
+            this.cashService = cashService;
         }
         public IActionResult Index()
         {
@@ -55,61 +61,75 @@ namespace OnLineStore.Areas.Store.Controllers
             var VM = ShoppingCartOrder();
             VM!.OrderHeader!.OrderDate = DateTime.Now;
             VM.OrderHeader.OrderStatus = StringDefault.OrderInProcess;
-
-            unitOfWork.OrderHeader.Add(VM.OrderHeader);
+            VM.OrderHeader.Payment = new PaymentViewModel()
+            {
+                Date = DateTime.Now,
+                Status = StringDefault.PaymentPending,
+                Amount = VM.OrderHeader.OrderTotal * 100,
+                Currency = "SL, USD",
+                CallbackUrl = configuration.GetValue<string>("Payment:CallbackUrl")!,
+            };
+            unitOfWork.OrderHeader.Add(mapper.Map<OrderHeader>(VM.OrderHeader));
+            unitOfWork.Payment.Add(mapper.Map<Payment>(VM.OrderHeader.Payment));
             orderService.UpdateStatus(VM.OrderHeader.Id, StringDefault.OrderInProcess, StringDefault.PaymentPending);
-
+            await unitOfWork.Save();
 
             // transform ShoppingCartLine to OrderItem
             foreach (var cart in VM.ListCart!)
             {
-                OrderItem orderItem = new()
+                OrderItemViewModel orderItem = new()
                 {
                     OrderHeaderId = VM.OrderHeader.Id,
                     ProductId = cart.ProductId,
                     //ItemsPrice = cart.LinePrice,
                     Count = cart.Count
                 };
-                unitOfWork.OrderItem.Add(orderItem);
+                unitOfWork.OrderItem.Add(mapper.Map<OrderItem>(orderItem));
                 await unitOfWork.Save();
             }
-            return RedirectToAction("Pay", "Order", new { id = VM.OrderHeader.Id });
+            return RedirectToAction("Pay", "Order", new { id = VM.OrderHeader.Id, area="Store" });
         }
 
         [HttpGet]
-        public IActionResult Pay(int id)
+        public async Task<IActionResult> Pay(int id)
         {
-            var order = unitOfWork.OrderHeader.GetFirstOrDefault(o => o.Id == id);
-            return View(order);
+            var payment = unitOfWork.Payment.GetFirstOrDefault(o => o.OrderHeaderId == id);
+            if (payment == null)
+            {
+                var re = await cashService.InitiatePaymentAsync(payment!);
+                // Update your order status in the database (e.g., mark as Paid)
+                //orderService.UpdatePaymentInfo(id, payment!);
+                unitOfWork.Payment.Add(re);
+                await unitOfWork.Save();
+            }
+            return RedirectToAction(nameof(OrderConfirmation),"Order", new { id = id , area = "Store"});
         }
-
+        [HttpGet("id")]
         public async Task<IActionResult> OrderConfirmation([FromQuery] int id)
         {
             if (id == 0)
             {
                 return BadRequest();
             }
-            var payment = new Payment();
             var orderHeader = unitOfWork.OrderHeader.GetFirstOrDefault(o => o.Id == id, includeProperties: "User");
             var paymentFromDb = unitOfWork.Payment.GetFirstOrDefault(p => p.OrderHeaderId == id);
-            if (orderHeader.OrderTotal == payment.Amount / 100)
+            if (orderHeader.OrderTotal == paymentFromDb.Amount / 100)
             {
-                orderService.UpdatePaymentInfo(orderHeader.Id, payment);
+                orderService.UpdatePaymentInfo(orderHeader.Id, paymentFromDb);
             }
-            //await unitOfWork.Save();
-            if (payment.Id != orderHeader.PaymentId || payment.Amount / 100 != orderHeader.OrderTotal)
+            if (paymentFromDb.Id != orderHeader.PaymentId || paymentFromDb.Amount / 100 != orderHeader.OrderTotal)
             {
                 return BadRequest();
             }
             if (paymentFromDb.Status == StringDefault.PaymentPaid)
             {
-                return await ApproveOP(orderHeader);
+                return View(ApproveOP(orderHeader));
             }
-            else if (paymentFromDb.Status == StringDefault.PaymentRejected)
+            if (paymentFromDb.Status == StringDefault.PaymentRejected)
             {
-                return await RejectOP(orderHeader);
+                return View(RejectOP(orderHeader));
             }
-            return View(new PaymentResultViewModel()
+            return View(new ResultViewModel()
             {
                 Id = 0,
                 Status = "مرفوض",
@@ -117,14 +137,14 @@ namespace OnLineStore.Areas.Store.Controllers
                 Message = "عذراً .. حدث خطأ ما ولم يتم إتمام طلبك  نرجو إعادة المحاولة في وقت لاحق.."
             });
         }
-        async Task<IActionResult> ApproveOP(OrderHeader orderHeader)
+        async Task<ResultViewModel> ApproveOP(OrderHeader orderHeader)
         {
             orderService.UpdateStatus(orderHeader.Id, StringDefault.OrderInProcess, StringDefault.PaymentPaid);
             await service.SendMailAsync(new MailData
             {
                 ToId = orderHeader.User!.Email!,
                 ToName = orderHeader.User.Name!,
-                Subject = "طلب جديد - الألوان السبعة",
+                Subject = "طلب جديد",
                 Body = "\\templates\\NewOrder.html",
                 Order = orderHeader,
                 //EmailAttachments = 
@@ -134,26 +154,26 @@ namespace OnLineStore.Areas.Store.Controllers
             HttpContext.Session.Clear();
             unitOfWork.ShoppingCartLine.RemoveRange(shoppingCarts);
             await unitOfWork.Save();
-            return View(new PaymentResultViewModel()
+            return new ResultViewModel()
             {
                 Id = orderHeader.Id,
                 Status = "مقبول",
                 Title = "تم إستقبال الطلب بنجاح",
                 Message = " شكراً لك لإتمام طلبك ..  لقد قمنا باستقباله  وسنقوم بإرسال رسالة التأكيد قريبا.. "
-            });
+            };
         }
 
-        async Task<IActionResult> RejectOP(OrderHeader orderHeader)
+        async Task<ResultViewModel> RejectOP(OrderHeader orderHeader)
         {
             orderService.UpdateStatus(orderHeader.Id, StringDefault.OrderInProcess, StringDefault.PaymentRejected);
             await unitOfWork.Save();
-            return View(new PaymentResultViewModel()
+            return new ResultViewModel()
             {
                 Id = 0,
                 Status = "مرفوض",
                 Title = "لم يتم إتمام الطلب",
-                Message = "عذراً .. حدث خطأ ما ولم يتم إتمام طلبك  نرجو إعادة المحاولة في وقت لاحق.."
-            });
+                Message = "عذراً .. حدث خطأ ما ولم يتم إتمام طلبك نرجو إعادة المحاولة في وقت لاحق.."
+            };
         }
 
 
@@ -162,7 +182,7 @@ namespace OnLineStore.Areas.Store.Controllers
             var cart = unitOfWork.ShoppingCartLine.GetFirstOrDefault(c => c.Id == cartId);
             unitOfWork.ShoppingCartLine.IncrementCount(cart, 1);
             await unitOfWork.Save();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), "Order", new { area = "Store" });
             //return ViewComponent("ShoppingCart");
         }
 
@@ -178,7 +198,7 @@ namespace OnLineStore.Areas.Store.Controllers
                 unitOfWork.ShoppingCartLine.DecrementCount(cart, 1);
             }
             await unitOfWork.Save();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), "Order", new { area = "Store" });
         }
 
         public async Task<IActionResult> Remove(int cartId)
@@ -187,19 +207,20 @@ namespace OnLineStore.Areas.Store.Controllers
             unitOfWork.ShoppingCartLine.Remove(cart);
             await unitOfWork.Save();
             toastNotification.Information("لقد تم إزالة المنتج من سلة المشتريات");
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), "Order", new { area = "Store" });
         }
 
         private ShoppingCartViewModel ShoppingCartOrder()
         {
             var id = User.Identities.FirstOrDefault()!.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            var shoppingCartLines = unitOfWork.ShoppingCartLine.GetAll(c => c.UserNameIdentifier == id, includeProperties: "Product");
             VM = new ShoppingCartViewModel()
             {
-                ListCart = unitOfWork.ShoppingCartLine.GetAll
-                (c => c.UserNameIdentifier == id, includeProperties: "Product"),
+                ListCart = mapper.Map<IEnumerable<ShoppingCartLineViewModel>>(shoppingCartLines),
                 OrderHeader = new(),
             };
             VM.OrderHeader.UserNameIdentifier = id;
+            VM.OrderHeader.Payment = new();
             foreach (var cartLine in VM.ListCart)
             {
                 cartLine.LinePrice = cartLine.Count * cartLine.Product!.Price;

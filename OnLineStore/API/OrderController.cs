@@ -8,6 +8,8 @@ using static Business.StringDefault;
 
 using Microsoft.AspNetCore.Mvc;
 
+using AutoMapper;
+
 namespace OnLineStore.API
 {
     [Route("api/[controller]")]
@@ -16,15 +18,17 @@ namespace OnLineStore.API
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IOrderService orderService;
+        private readonly IMapper mapper;
 
-        public OrderController(IUnitOfWork unitOfWork, IOrderService orderService)
+        public OrderController(IUnitOfWork unitOfWork, IOrderService orderService, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
             this.orderService = orderService;
+            this.mapper = mapper;
         }
 
         [HttpGet("{id:int}")]
-        public ActionResult<OrderHeader> GetOrder(int id)
+        public ActionResult<OrderHeaderViewModel> GetOrder(int id)
         {
             try
             {
@@ -34,7 +38,7 @@ namespace OnLineStore.API
                 {
                     return NotFound();
                 }
-                return result;
+                return mapper.Map<OrderHeaderViewModel>(result);
             }
             catch (Exception)
             {
@@ -66,7 +70,7 @@ namespace OnLineStore.API
             }
         }
 
-        [HttpGet]
+        [HttpGet("status")]
         public IActionResult GetAll(string status)
         {
             var orderHeaders = unitOfWork.OrderHeader.GetAll(includeProperties: "User, Payment");

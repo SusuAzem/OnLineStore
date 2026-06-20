@@ -23,9 +23,9 @@
                             <div class="col-md-3 col-sm-6 col-lg-6">
                                 <input class="mybtn btn filter-btn mb-1" data-filter="كل الفئات" value="كل الفئات" />
                                                                     
-                                @foreach (ProductType item in Model.Types!)
+                                @foreach (var item in Model.Types!)
                                 {
-                                    <input class="mybtn btn filter-btn mb-1" data-filter="@item.Type" value=" @item.Type" />
+                                    <button class="mybtn btn filter-btn mb-1" data-filter="@item.Type">@item.Type</button>
                                 }
                             </div>
                         </div>

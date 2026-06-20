@@ -23,6 +23,5 @@ namespace Core
         public int TypeId { get; set; }
         [ForeignKey("TypeId")]
         public virtual ProductType? ProductType { get; set; }
-
     }
 }

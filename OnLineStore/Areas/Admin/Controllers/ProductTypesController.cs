@@ -1,11 +1,17 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 
+using AutoMapper;
+
 using Core;
 
 using Data;
+using Data.IRepository;
+using Data.Repository;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using OnLineStore.ViewModels;
 
 namespace OnLineStore.Areas.Admin.Controllers
 {
@@ -13,33 +19,48 @@ namespace OnLineStore.Areas.Admin.Controllers
     [Authorize(Policy = "Admin")]
     public class ProductTypesController : Controller
     {
-        private readonly AppDbContext context;
+        private readonly IUnitOfWork unitOfWork;
         private readonly INotyfService toastNotification;
+        private readonly IMapper mapper;
 
-        public ProductTypesController(AppDbContext context, INotyfService toastNotification)
+        public ProductTypesController(IUnitOfWork unitOfWork, INotyfService toastNotification, IMapper mapper)
         {
-            this.context = context;
+            this.unitOfWork = unitOfWork;
             this.toastNotification = toastNotification;
+            this.mapper = mapper;
         }
         public IActionResult Index()
         {
-            return View(context.ProductTypes.ToList());
+            var productT = unitOfWork.ProductType.GetAll();
+            List<ProductTypeViewModel> list = new();
+            foreach (var item in productT)
+            {
+                list.Add(mapper.Map<ProductTypeViewModel>(item));
+            }
+            return View(list);
         }
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            return View(new ProductTypeViewModel());
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ProductType protype)
+        public async Task<IActionResult> Create(ProductTypeViewModel protype)
         {
             if (ModelState.IsValid)
             {
-                context.ProductTypes.Add(protype);
-                await context.SaveChangesAsync();
+                var productType = mapper.Map<ProductType>(protype);
+                var existingType = unitOfWork.ProductType.GetFirstOrDefault(p=>p.Type == protype.Type);
+                if (existingType != null)
+                {
+                    ModelState.AddModelError("", "هذا النوع موجود بالفعل");
+                    return View(protype);
+                }
+                unitOfWork.ProductType.Add(productType);
+                await unitOfWork.Save();
                 toastNotification.Success("لقد تم إضافة نوع المنتج");
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "ProductTypes", new {area="Admin"});
             }
             return View(protype);
         }
@@ -50,39 +71,26 @@ namespace OnLineStore.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            var type = context.ProductTypes.Find(id);
+            var type = unitOfWork.ProductType.GetFirstOrDefault(p=>p.Id == id);
             if (type == null)
             {
                 return NotFound();
             }
-            return View(type);
+            return View(mapper.Map<ProductTypeViewModel>(type));
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ProductType protype)
+        public async Task<IActionResult> Edit(ProductTypeViewModel protype)
         {
             if (ModelState.IsValid)
             {
-                context.ProductTypes.Update(protype);
-                await context.SaveChangesAsync();
+                var productType = mapper.Map<ProductType>(protype);
+                unitOfWork.ProductType.Update(productType);
+                await unitOfWork.Save();
                 toastNotification.Success("لقد تم تعديل نوع المنتج");
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "ProductTypes", new { area = "Admin" });
             }
             return View(protype);
-        }
-        [HttpGet]
-        public IActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var type = context.ProductTypes.Find(id);
-            if (type == null)
-            {
-                return NotFound();
-            }
-            return View(type);
         }
 
         [HttpGet]
@@ -92,16 +100,16 @@ namespace OnLineStore.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            var type = context.ProductTypes.Find(id);
+            var type = unitOfWork.ProductType.GetFirstOrDefault(p => p.Id == id);
             if (type == null)
             {
                 return NotFound();
             }
-            return View(type);
+            return View(mapper.Map<ProductTypeViewModel>(type));
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int? id, ProductType protype)
+        public async Task<IActionResult> Delete(int? id, ProductTypeViewModel protype)
         {
             if (id == null)
             {
@@ -111,22 +119,19 @@ namespace OnLineStore.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            var type = context.ProductTypes.Find(id);
+            var type = unitOfWork.ProductType.GetFirstOrDefault(p => p.Id == id);
             if (type == null)
             {
                 return NotFound();
             }
             if (ModelState.IsValid)
             {
-                context.ProductTypes.Remove(type);
-                await context.SaveChangesAsync();
+                unitOfWork.ProductType.Remove(type);
+                await unitOfWork.Save();
                 toastNotification.Information("لقد تم حذف نوع المنتج");
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "ProductTypes", new { area = "Admin" });
             }
             return View(type);
         }
-        #region MyRegion
-
-        #endregion
     }
 }

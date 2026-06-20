@@ -28,6 +28,7 @@ namespace OnLineStore.Areas.Admin.Controllers
             return View();
         }
 
+
         public IActionResult GetAll()
         {
             var userList = unitOfWork.User.GetAll(u=>u.Role == AdminEmail).Select(
@@ -45,10 +46,10 @@ namespace OnLineStore.Areas.Admin.Controllers
                 unitOfWork.User.Update(user);
                 await unitOfWork.Save();
                 toastNotification.Information($"لقد تم تعيين المستخدم {user.Name} كمسؤول");
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index),"Users", new { area = "Admin" });
             }
             toastNotification.Error("حدث خطأ خلال عملية التعيين كمسؤول");
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), "Users", new { area = "Admin" });
         }
 
 
@@ -60,11 +61,13 @@ namespace OnLineStore.Areas.Admin.Controllers
                 unitOfWork.User.Remove(user);
                 await unitOfWork.Save();
                 toastNotification.Information($"لقد تم حذف المستخدم {user.Name}");
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index),"Users", new { area = "Admin" });
             }
             toastNotification.Error("خطأ خلال عملية الحذف");
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), "Users", new { area = "Admin" });
         }
+
+
         public async Task<IActionResult> LockUnlock(string id)
         {
             var exuser = unitOfWork.User.GetFirstOrDefault(u => u.NameIdentifier == id);
@@ -72,7 +75,7 @@ namespace OnLineStore.Areas.Admin.Controllers
             if (exuser == null)
             {
                 toastNotification.Error("خطأ خلال عملية الحجب");
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "Users", new { area = "Admin" });
             }
             if  (exuser.LockoutEnd > DateTime.Now)
             {
@@ -88,7 +91,7 @@ namespace OnLineStore.Areas.Admin.Controllers
             unitOfWork.User.Update(exuser);
             await unitOfWork.Save();
             toastNotification.Success(text);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), "Users", new { area = "Admin" });
         }
     }
 }

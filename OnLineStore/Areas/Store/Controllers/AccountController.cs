@@ -59,18 +59,22 @@ namespace OnLineStore.Areas.Store.Controllers
             if (!result.Succeeded)
             {
                 toastNotification.Error("فشل تسجيل الدخول");
-                return RedirectToAction("Login", "Account", new { area = "Store" });
+                return RedirectToAction("AccessDenied", "Account", new { area = "Store" });
             }
             var claims = result.Principal!.Identities.FirstOrDefault()!.Claims.ToList();
             var user = await userService.HalfReg(claims);
             if (user.LockoutEnd > DateTimeOffset.Now)
             {
                 await HttpContext.SignOutAsync();
-                toastNotification.Custom("قد تم حجب المستخدم عن تسجيل الدخول للمنصة.. تواصل مع الإدارة لرفع الحجب", 10, "red");
                 return RedirectToLocal(returnUrl);
             }
             toastNotification.Success("تم تسجيل الدخول بنجاح");
             return RedirectToLocal(returnUrl);
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
 
         public async Task<IActionResult> Logout()

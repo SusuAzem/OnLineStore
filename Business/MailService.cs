@@ -37,7 +37,7 @@ namespace Business
             MailboxAddress emailFrom = new(mailData.ToName, mailData.ToId!);
 
             string emailText = mailData.Body + Environment.NewLine +
-                DateTime.Today.Date.ToString("dd / MMMM / yyyy", new CultureInfo("ar-SA")).ConvertNumerals();
+                DateTime.Today.Date.ToString("dd / MMMM / yyyy", new CultureInfo("ar-SY")).ConvertNumerals();
 
             BodyBuilder emailBodyBuilder = new()
             {
@@ -74,13 +74,13 @@ namespace Business
                 if (filePath.Contains("NewOrder", StringComparison.OrdinalIgnoreCase))
                 {
                     emailTemplateText = string.Format(emailTemplateText,  mailData.ToName, mailData.Order!.Id,
-                    mailData.Order.OrderDate.Date.ToString("dd / MMMM / yyyy", new CultureInfo("ar-SA")).ConvertNumerals());
+                    mailData.Order.OrderDate.Date.ToString("dd / MMMM / yyyy", new CultureInfo("ar-SY")).ConvertNumerals());
                 }
                 else
                 {
                     emailTemplateText = string.Format(emailTemplateText,
                    mailData.ToName,
-                   DateTime.Today.Date.ToString("dd / MMMM / yyyy", new CultureInfo("ar-SA")).ConvertNumerals());
+                   DateTime.Today.Date.ToString("dd / MMMM / yyyy", new CultureInfo("ar-SY")).ConvertNumerals());
                 }            
 
                 BodyBuilder emailBodyBuilder = new()

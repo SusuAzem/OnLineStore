@@ -13,6 +13,7 @@ using Core;
 
 namespace OnLineStore.Areas.UserData.Controllers
 {
+    [Authorize]
     [Area("UserData")]
     public class AccountController : Controller
     {
